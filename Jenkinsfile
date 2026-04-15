@@ -2,44 +2,27 @@ pipeline {
     agent any
 
     tools {
-        gradle 'Gradle'
-        jdk 'JDK'
+        maven 'Maven'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/shraddha1231/GradleJenkinsGroup.git'
+                git 'https://github.com/shraddha1231/GradleJenkinsGroup.git'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'gradle build'
+                sh 'mvn clean package'
             }
         }
 
-        stage('Test') {
+        stage('Deploy to Tomcat') {
             steps {
-                sh 'gradle test'
+                sh 'cp target/MyMavenWebApp.war /opt/tomcat/webapps/'
             }
-        }
-
-        stage('Run Application') {
-            steps {
-                sh 'gradle run'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build failed!'
         }
     }
 }
